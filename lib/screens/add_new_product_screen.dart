@@ -379,6 +379,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                                   return CategoryList();
                                                 }).whenComplete(() {
                                               setState(() {
+                                                _visible = true;
                                                 _categoryTextController.text =
                                                     _provider.selectedCategory;
                                               });
@@ -388,71 +389,74 @@ class _AddNewProductState extends State<AddNewProduct> {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 20),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "Sub Category",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 16,
+                                  Visibility(
+                                    visible: _visible,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, bottom: 20),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "Sub Category",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: AbsorbPointer(
-                                            absorbing: true,
-                                            child: TextFormField(
-                                              controller: _subCategoryTextController,
-                                              validator: (value) {
-                                                if(value.isEmpty) {
-                                                  return 'Select Sub Category name';
-                                                }
-                                                return null;
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    "not selected", //Item code
-                                                labelStyle: TextStyle(
-                                                    color: Colors.grey),
-                                                enabledBorder:
-                                                    UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Colors.grey[300],
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: AbsorbPointer(
+                                              absorbing: true,
+                                              child: TextFormField(
+                                                controller: _subCategoryTextController,
+                                                validator: (value) {
+                                                  if(value.isEmpty) {
+                                                    return 'Select Sub Category name';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      "not selected", //Item code
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.grey[300],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.edit_outlined),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return SubCategoryList();
-                                                }).whenComplete(
-                                              () {
-                                                setState(
-                                                  () {
-                                                    _subCategoryTextController
-                                                            .text =
-                                                        _provider
-                                                            .selectedSubCategory;
-                                                    _visible = true;
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                        )
-                                      ],
+                                          IconButton(
+                                            icon: Icon(Icons.edit_outlined),
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return SubCategoryList();
+                                                  }).whenComplete(
+                                                () {
+                                                  setState(
+                                                    () {
+                                                      _subCategoryTextController
+                                                              .text =
+                                                          _provider
+                                                              .selectedSubCategory;
+                                                      _visible = true;
+                                                    },
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   TextFormField(
