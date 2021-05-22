@@ -28,7 +28,7 @@ class ProductProvider with ChangeNotifier {
 
   getShopName(shopName) {
     this.shopName = shopName;
-    notifyListeners();
+    // notifyListeners();
   }
 
   resetProvider() {
