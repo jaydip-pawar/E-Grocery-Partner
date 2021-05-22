@@ -43,7 +43,6 @@ class _EditViewProductState extends State<EditViewProduct> {
   String image;
   String categoryImage;
   File _image;
-  bool _visible = false;
   bool _editing = true;
 
   @override
@@ -88,21 +87,32 @@ class _EditViewProductState extends State<EditViewProduct> {
   @override
   Widget build(BuildContext context) {
     var _provider = Provider.of<ProductProvider>(context);
-    _provider.resetProvider();
 
     return Scaffold(
       appBar: AppBar(
-        // iconTheme: IconThemeData(
-        //   color: Colors.white
-        // ),
-        actions: [
-          TextButton(
-            child: Text('Edit', style: TextStyle(color: Colors.black87),),
-            onPressed: () {
+        leading: IconButton(
+          onPressed: () {
+            if(!_editing) {
               setState(() {
-                _editing = false;
+                _editing = true;
               });
-            },
+            } else {
+              Navigator.pop(context);
+            }
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+        actions: [
+          Visibility(
+            visible: _editing ? true : false,
+            child: TextButton(
+              child: Text('Edit', style: TextStyle(color: Colors.black87),),
+              onPressed: () {
+                setState(() {
+                  _editing = false;
+                });
+              },
+            ),
           ),
         ],
       ),
@@ -182,6 +192,7 @@ class _EditViewProductState extends State<EditViewProduct> {
                         );
                         EasyLoading.dismiss();
                       }
+                      _provider.resetProvider();
                     }
                   },
                   child: Container(
@@ -409,7 +420,6 @@ class _EditViewProductState extends State<EditViewProduct> {
                                             return CategoryList();
                                           }).whenComplete(() {
                                         setState(() {
-                                          _visible = true;
                                           _categoryTextController.text =
                                               _provider.selectedCategory;
                                         });
@@ -420,47 +430,47 @@ class _EditViewProductState extends State<EditViewProduct> {
                               ],
                             ),
                           ),
-                          Visibility(
-                            visible: _visible,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 20),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Sub Category",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 20),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Sub Category",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: AbsorbPointer(
-                                      absorbing: true,
-                                      child: TextFormField(
-                                        controller: _subCategoryTextController,
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Select Sub Category name';
-                                          }
-                                          return null;
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: "not selected", //Item code
-                                          labelStyle:
-                                              TextStyle(color: Colors.grey),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.grey[300],
-                                            ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: AbsorbPointer(
+                                    absorbing: true,
+                                    child: TextFormField(
+                                      controller: _subCategoryTextController,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Select Sub Category name';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: "not selected", //Item code
+                                        labelStyle:
+                                            TextStyle(color: Colors.grey),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey[300],
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  IconButton(
+                                ),
+                                Visibility(
+                                  visible: _editing ? false : true,
+                                  child: IconButton(
                                     icon: Icon(Icons.edit_outlined),
                                     onPressed: () {
                                       showDialog(
@@ -473,15 +483,14 @@ class _EditViewProductState extends State<EditViewProduct> {
                                             () {
                                               _subCategoryTextController.text =
                                                   _provider.selectedSubCategory;
-                                              _visible = true;
                                             },
                                           );
                                         },
                                       );
                                     },
-                                  )
-                                ],
-                              ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                           Container(
