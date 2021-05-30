@@ -1,15 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_grocery_partner/screens/edit_view_product.dart';
 import 'package:e_grocery_partner/services/firebase_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PublishedProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseServices _services = FirebaseServices();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User user = auth.currentUser;
     return Container(
       child: StreamBuilder(
-        stream: _services.products.where('published', isEqualTo: true).snapshots(),
+        stream: _services.products.where('published', isEqualTo: true).where('seller.sellerUid', isEqualTo: user.uid).snapshots(),
         builder: (context, snapshot) {
           if(snapshot.hasError) {
             return Text('Something went wrong...');

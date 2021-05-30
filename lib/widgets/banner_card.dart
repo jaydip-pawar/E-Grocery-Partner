@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_grocery_partner/services/firebase_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -9,9 +10,11 @@ class BannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseServices _services = FirebaseServices();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User user = auth.currentUser;
 
     return StreamBuilder<QuerySnapshot>(
-      stream: _services.vendorBanner.snapshots(),
+      stream: _services.vendorBanner.where('sellerUid', isEqualTo: user.uid).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
