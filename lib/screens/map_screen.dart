@@ -120,8 +120,11 @@ class _MapScreenState extends State<MapScreen> {
                           absorbing: _locating ? true : false,
                           child: TextButton(
                             onPressed: (){
-                              authentication.addLocation(locationData.latitude, locationData.longitude, locationData.address);
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
+                              locationData.savePrefs();
+                              setState(() {
+                                authentication.addLocation(locationData.latitude, locationData.longitude, locationData.address, locationData.streetAddress);
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
+                              });
                             },
                             style: TextButton.styleFrom(
                               backgroundColor: _locating ? Colors.grey :Theme.of(context).primaryColor,

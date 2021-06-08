@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:geocode/geocode.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationProvider with ChangeNotifier {
 
   double latitude;
   double longitude;
+  Address addresses;
   bool permissionAllowed = false;
   var address, streetAddress;
   GeoCode geoCode = GeoCode();
   bool loading = false;
 
-  Future<void> getCurrentPosition() async {
+  Future<Position> getCurrentPosition() async {
 
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     if (position != null) {
@@ -32,6 +34,7 @@ class LocationProvider with ChangeNotifier {
     } else {
       print("Permission not allowed");
     }
+    return position;
   }
 
   void onCameraMove(CameraPosition cameraPosition) async {
@@ -49,5 +52,13 @@ class LocationProvider with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> savePrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble("latitude", this.latitude);
+    prefs.setDouble("longitude", this.longitude);
+    prefs.setString("address", this.address);
+    prefs.setString("location", "${this.streetAddress}");
   }
 }

@@ -26,6 +26,7 @@ class AuthenticationProvider with ChangeNotifier  {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return showDialog(
@@ -107,13 +108,16 @@ class AuthenticationProvider with ChangeNotifier  {
     }
   }
 
-  void addLocation(double latitude, double longitude, String address) {
+  void addLocation(double latitude, double longitude, String address, String streetAddress) {
     final firestoreInstance = FirebaseFirestore.instance;
     var firebaseUser =  FirebaseAuth.instance.currentUser;
     firestoreInstance.collection("shop_owner").doc(firebaseUser.uid).update(
         {
           "location" : GeoPoint(latitude, longitude),
-          "address" : address
+          "address" : address,
+          "latitude": latitude,
+          "longitude": longitude,
+          "street_address": streetAddress,
         }).then((_){
       print("successfully added location!");
     });
@@ -121,8 +125,15 @@ class AuthenticationProvider with ChangeNotifier  {
 
   void signOut() async{
     await FirebaseAuth.instance.signOut();
-    await GoogleSignIn().disconnect();
-    await GoogleSignIn().signOut();
+    try {
+      await GoogleSignIn().disconnect();
+      await GoogleSignIn().signOut();
+    } catch (e) {
+      print("User not signed in with google");
+    } finally {
+      notifyListeners();
+    }
+
   }
 
   void addData(String shopName, String imageUrl) {
